@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% block title %}Sort &amp; Search — AcademiTrack{% endblock %}
+{% block content %}
+<h4 class="fw-bold mb-4">🔍 Sort &amp; Search Records</h4>
+
+<form method="POST">
+  <div class="row g-3">
+
+    <!-- ── SORTING PANEL ───────────────────────────────── -->
+    <div class="col-md-6">
+      <div class="card p-4 h-100">
+        <h6 class="fw-bold text-uppercase text-muted mb-3">Sorting</h6>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Choose a Sorting Algorithm</label>
+          <select name="sort_algo" class="form-select">
+            {% for algo in sort_algorithms %}
+              <option value="{{ algo }}" {% if sort_algo == algo %}selected{% endif %}>{{ algo }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Choose Column to Sort By</label>
+          <select name="sort_field" class="form-select">
+            {% for field in sortable_fields %}
+              <option value="{{ field }}" {% if sort_field == field %}selected{% endif %}>{{ field | capitalize }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Sort Order</label>
+          <div class="d-flex gap-3">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sort_order" value="asc"
+                {% if sort_order == 'asc' %}checked{% endif %}/>
+              <label class="form-check-label">Ascending ↑</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="sort_order" value="desc"
+                {% if sort_order == 'desc' %}checked{% endif %}/>
+              <label class="form-check-label">Descending ↓</label>
+            </div>
+          </div>
+        </div>
+        <button type="submit" name="action" value="sort" class="btn btn-primary w-100 fw-semibold mt-auto">
+          Sort Records
+        </button>
+      </div>
+    </div>
+
+    <!-- ── SEARCHING PANEL ────────────────────────────── -->
+    <div class="col-md-6">
+      <div class="card p-4 h-100">
+        <h6 class="fw-bold text-uppercase text-muted mb-3">Searching</h6>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Choose a Searching Algorithm</label>
+          <select name="search_algo" class="form-select">
+            {% for algo in search_algorithms %}
+              <option value="{{ algo }}" {% if search_algo == algo %}selected{% endif %}>{{ algo }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Enter Search Term</label>
+          <input type="text" name="search_term" class="form-control"
+                 placeholder="Search by name, ID, major…"
+                 value="{{ search_term }}"/>
+        </div>
+        <button type="submit" name="action" value="search" class="btn btn-success w-100 fw-semibold mt-auto">
+          Search Records
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /row -->
+</form>
+
+<!-- ── SORT RESULTS ─────────────────────────────────────── -->
+{% if action == 'sort' %}
+  <div class="mt-4">
+    <h6 class="fw-bold mb-3">
+      Sort Results —
+      <span class="text-muted">{{ sort_algo }}, by <em>{{ sort_field }}</em>,
+      {{ 'Ascending ↑' if sort_order == 'asc' else 'Descending ↓' }}</span>
+    </h6>
+    {% if records %}
+      <div class="card p-0 overflow-hidden">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>#</th><th>Name</th><th>Student ID</th>
+              <th>Age</th><th>GPA</th><th>Major</th>
+              <th>Enrolled On</th><th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in records %}
+            <tr>
+              <td class="text-muted">{{ loop.index }}</td>
+              <td class="fw-semibold">{{ r.name }}</td>
+              <td>{{ r.student_id }}</td>
+              <td>{{ r.age }}</td>
+              <td>{{ r.gpa }}</td>
+              <td>{{ r.major }}</td>
+              <td>{{ r.enrolled_on }}</td>
+              <td>
+                <span class="{{ 'badge-active' if r.is_active == 'Yes' else 'badge-inactive' }}">
+                  {{ r.is_active }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="alert alert-warning">No records found in the database. Add some records first.</div>
+    {% endif %}
+  </div>
+{% endif %}
+
+<!-- ── SEARCH RESULTS ───────────────────────────────────── -->
+{% if action == 'search' %}
+  <div class="mt-4">
+    <h6 class="fw-bold mb-3">
+      Search Results —
+      <span class="text-muted">{{ search_algo }}, term: "<em>{{ search_term }}</em>"</span>
+    </h6>
+    {% if no_results %}
+      <div class="alert alert-danger fw-semibold">No data found matching "{{ search_term }}".</div>
+    {% else %}
+      <div class="card p-0 overflow-hidden">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>#</th><th>Name</th><th>Student ID</th>
+              <th>Age</th><th>GPA</th><th>Major</th>
+              <th>Enrolled On</th><th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in search_results %}
+            <tr>
+              <td class="text-muted">{{ loop.index }}</td>
+              <td class="fw-semibold">{{ r.name }}</td>
+              <td>{{ r.student_id }}</td>
+              <td>{{ r.age }}</td>
+              <td>{{ r.gpa }}</td>
+              <td>{{ r.major }}</td>
+              <td>{{ r.enrolled_on }}</td>
+              <td>
+                <span class="{{ 'badge-active' if r.is_active == 'Yes' else 'badge-inactive' }}">
+                  {{ r.is_active }}
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% endblock %}
