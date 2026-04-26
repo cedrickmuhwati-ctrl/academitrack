@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Add Record — AcademiTrack{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <h4 class="fw-bold mb-4">➕ Add New Student Record</h4>
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+          <input type="text" name="name" class="form-control" placeholder="e.g. Alice Moyo" required/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Student ID <span class="text-danger">*</span></label>
+          <input type="text" name="student_id" class="form-control" placeholder="e.g. S2024001" required/>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Age <span class="text-danger">*</span></label>
+            <input type="number" name="age" class="form-control" min="16" max="60" required/>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">GPA <span class="text-danger">*</span></label>
+            <input type="number" name="gpa" class="form-control" step="0.01" min="0" max="4" placeholder="0.00 – 4.00" required/>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Major <span class="text-danger">*</span></label>
+          <input type="text" name="major" class="form-control" placeholder="e.g. Computer Science" required/>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Enrolment Date <span class="text-danger">*</span></label>
+          <input type="date" name="enrolled_on" class="form-control" required/>
+        </div>
+        <div class="mb-4 form-check">
+          <input type="checkbox" name="is_active" class="form-check-input" id="activeCheck" checked/>
+          <label class="form-check-label" for="activeCheck">Currently Active Student</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">Save Record</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
